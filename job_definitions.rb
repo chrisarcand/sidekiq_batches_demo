@@ -7,7 +7,8 @@ class StartWorkflow
   def perform(order_id)
     batch.jobs do
       step1 = Sidekiq::Batch.new
-      step1.on(:success, 'FulfillmentCallbacks#step1_done', 'oid' => order_id)
+      step1.on(:complete, 'FulfillmentCallbacks#step1_complete', 'oid' => order_id)
+      step1.on(:success,  'FulfillmentCallbacks#step1_success',  'oid' => order_id)
       step1.jobs do
         A.perform_async(order_id)
       end
@@ -16,12 +17,18 @@ class StartWorkflow
 end
 
 class FulfillmentCallbacks
-  def step1_done(status, options)
+  def step1_complete(status, options)
+    Sidekiq.logger.info "Step 1 complete"
+  end
+
+  def step1_success(status, options)
+    Sidekiq.logger.info "Step 1 successful! Enqueuing next step..."
     oid = options['oid']
     overall = Sidekiq::Batch.new(status.parent_bid)
     overall.jobs do
       step2 = Sidekiq::Batch.new
-      step2.on(:success, 'FulfillmentCallbacks#step2_done', 'oid' => oid)
+      step2.on(:complete, 'FulfillmentCallbacks#step2_complete', 'oid' => oid)
+      step2.on(:success,  'FulfillmentCallbacks#step2_success',  'oid' => oid)
       step2.jobs do
         B.perform_async
         C.perform_async
@@ -32,24 +39,36 @@ class FulfillmentCallbacks
     end
   end
 
-  def step2_done(status, options)
+  def step2_complete(status, options)
+    Sidekiq.logger.info "Step 2 complete"
+  end
+
+  def step2_success(status, options)
+    Sidekiq.logger.info "Step 2 successful! Enqueuing next step..."
     oid = options['oid']
     overall = Sidekiq::Batch.new(status.parent_bid)
     overall.jobs do
       step3 = Sidekiq::Batch.new
-      step3.on(:success, 'FulfillmentCallbacks#step3_done', 'oid' => oid)
+      step3.on(:complete, 'FulfillmentCallbacks#step2_complete', 'oid' => oid)
+      step3.on(:success,  'FulfillmentCallbacks#step3_success',  'oid' => oid)
       step3.jobs do
         G.perform_async(oid)
       end
     end
   end
 
-  def step3_done(status, options)
+  def step3_complete(status, options)
+    Sidekiq.logger.info "Step 3 complete"
+  end
+
+  def step3_success(status, options)
+    Sidekiq.logger.info "Step 3 successful! Enqueuing next step..."
     oid = options['oid']
     overall = Sidekiq::Batch.new(status.parent_bid)
     overall.jobs do
       step4 = Sidekiq::Batch.new
-      step4.on(:success, 'FulfillmentCallbacks#step4_done', 'oid' => oid)
+      step4.on(:complete, 'FulfillmentCallbacks#step2_complete', 'oid' => oid)
+      step4.on(:success,  'FulfillmentCallbacks#step4_success',  'oid' => oid)
       step4.jobs do
         H.perform_async(oid)
         I.perform_async(oid)
@@ -57,7 +76,12 @@ class FulfillmentCallbacks
     end
   end
 
-  def step4_done(status, options)
+  def step4_complete(status, options)
+    Sidekiq.logger.info "Step 4 complete"
+  end
+
+  def step4_success(status, options)
+    Sidekiq.logger.info "Step 4 successful! Enqueuing next step..."
     oid = options['oid']
     overall = Sidekiq::Batch.new(status.parent_bid)
     overall.jobs do
@@ -69,12 +93,12 @@ class FulfillmentCallbacks
 
   def shipped(status, options)
     oid = options['oid']
-    puts "Order #{oid} has shipped!"
+    puts "Order #{oid} was successfully shipped!"
   end
 
   def complete(status, options)
     oid = options['oid']
-    puts "Order #{oid} COMPLETE (not successful, necessarily)"
+    puts "Order #{oid} complete (may or may not contain errors)"
   end
 end
 
