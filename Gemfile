@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.7.5'
+ruby '3.1.5'
 
 gem "sidekiq-ent", "~> 7", source: "https://enterprise.contribsys.com"
 
