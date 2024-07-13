@@ -1,43 +1,49 @@
 GEM
-  remote: https://rubygems.org/
   remote: https://enterprise.contribsys.com/
   specs:
-    concurrent-ruby (1.3.3)
+    sidekiq-ent (2.5.3)
+      einhorn (>= 0.7.4)
+      sidekiq (>= 6.5.0, < 7)
+      sidekiq-pro (>= 5.5.0, < 6)
+    sidekiq-pro (5.5.2)
+      sidekiq (>= 6.5.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
     connection_pool (2.4.1)
-    dotenv (2.8.1)
+    dotenv (3.1.2)
     einhorn (1.0.0)
-    gserver (0.0.1)
-    logger (1.6.0)
+    nio4r (2.7.3)
     ostruct (0.6.0)
-    rack (3.1.7)
-    redis (4.8.1)
+    puma (6.4.2)
+      nio4r (~> 2.0)
+    rack (2.2.9)
+    rack-session (1.0.2)
+      rack (< 3)
+    redis (5.2.0)
+      redis-client (>= 0.22.0)
     redis-client (0.22.2)
       connection_pool
-    sidekiq (7.3.0)
-      concurrent-ruby (< 2)
-      connection_pool (>= 2.3.0)
-      logger
-      rack (>= 2.2.4)
-      redis-client (>= 0.22.2)
-    sidekiq-ent (7.3.0)
-      einhorn (~> 1.0)
-      gserver
-      sidekiq (>= 7.3.0, < 8)
-      sidekiq-pro (>= 7.3.0, < 8)
-    sidekiq-pro (7.3.0)
-      sidekiq (>= 7.3.0, < 8)
+    sidekiq (6.5.5)
+      connection_pool (>= 2.2.2)
+      rack (~> 2.0)
+      redis (>= 4.5.0)
 
 PLATFORMS
+  arm64-darwin-23
   ruby
 
 DEPENDENCIES
-  dotenv (~> 2.7)
+  dotenv
   ostruct
-  redis (~> 4.0)
-  sidekiq-ent (~> 7)!
+  puma
+  rack-session
+  redis
+  sidekiq-ent (~> 2.5.3)!
 
 RUBY VERSION
    ruby 3.1.5p252
 
 BUNDLED WITH
-   2.1.4
+   2.5.3

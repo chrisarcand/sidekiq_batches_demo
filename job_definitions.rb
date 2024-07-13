@@ -102,11 +102,14 @@ class FulfillmentCallbacks
   end
 end
 
+SLEEP_TIME = 2..5
+
 class A
   include Sidekiq::Job
 
   def perform(order_id)
     puts "Performing job A for order #{order_id}"
+    sleep(rand(SLEEP_TIME))
   end
 end
 
@@ -115,6 +118,7 @@ class B
 
   def perform
     puts "Performing job B"
+    sleep(rand(SLEEP_TIME))
   end
 end
 
@@ -123,6 +127,7 @@ class C
 
   def perform
     puts "Performing job C"
+    sleep(rand(SLEEP_TIME))
   end
 end
 
@@ -131,6 +136,7 @@ class D
 
   def perform
     puts "Performing job D"
+    sleep(rand(SLEEP_TIME))
   end
 end
 
@@ -139,6 +145,7 @@ class E
 
   def perform
     puts "Performing job E"
+    sleep(rand(SLEEP_TIME))
   end
 end
 
@@ -147,6 +154,7 @@ class F
 
   def perform
     puts "Performing job F"
+    sleep(rand(SLEEP_TIME))
   end
 end
 
@@ -155,6 +163,7 @@ class G
 
   def perform(oid)
     puts "Performing job G for order #{oid}"
+    sleep(rand(SLEEP_TIME))
   end
 end
 
@@ -163,6 +172,7 @@ class H
 
   def perform(oid)
     puts "Performing job H for order #{oid}"
+    sleep(rand(SLEEP_TIME))
   end
 end
 
@@ -171,6 +181,7 @@ class I
 
   def perform(oid)
     puts "Performing job I for order #{oid}"
+    sleep(rand(SLEEP_TIME))
   end
 end
 
@@ -179,6 +190,7 @@ class J
 
   def perform(oid)
     puts "Performing job J for order #{oid}"
+    sleep(rand(SLEEP_TIME))
   end
 end
 
@@ -187,6 +199,7 @@ class K
 
   def perform(oid)
     puts "Performing job K for order #{oid}"
+    sleep(rand(SLEEP_TIME))
   end
 end
 
@@ -195,6 +208,7 @@ class L
 
   def perform(oid)
     puts "Performing job L for order #{oid}"
+    sleep(rand(SLEEP_TIME))
     if bid
       batch.jobs do
         M.perform_async(oid)
@@ -208,5 +222,6 @@ class M
 
   def perform(oid)
     puts "Performing job M for order #{oid}"
+    sleep(rand(SLEEP_TIME))
   end
 end

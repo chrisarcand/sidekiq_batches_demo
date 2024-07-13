@@ -2,8 +2,10 @@ source 'https://rubygems.org'
 
 ruby '3.1.5'
 
-gem "sidekiq-ent", "~> 7", source: "https://enterprise.contribsys.com"
+gem "sidekiq-ent", "~> 2.5.3", source: "https://enterprise.contribsys.com"
 
-gem 'redis', '~> 4.0'
-gem 'dotenv', '~> 2.7'
+gem 'redis'
+gem 'dotenv'
 gem 'ostruct'
+gem 'puma'
+gem 'rack-session'
