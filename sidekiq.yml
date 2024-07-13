@@ -1,6 +1,3 @@
 :concurrency: 10
 :queues:
   - default
-:logfile: ./sidekiq.log
-:logging:
-  :level: DEBUG

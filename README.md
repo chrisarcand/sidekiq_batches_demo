@@ -4,8 +4,9 @@ A minimal little playground to toy with the [Really Complex Workflows with Batch
 documentation. 
 
 As-is, you'll need a [Sidekiq Enterprise](https://sidekiq.org/products/enterprise.html) license to
-use this example. Batching, however, is a [Sidekiq Pro] feature. Change the Gemfile as necessary and
-remove the appropriate `require` in  the Rack configuration file (`sidekiq_web.ru`).
+use this example. Batching, however, only requires [Sidekiq Pro](https://sidekiq.org/products/pro.html) feature. Change the Gemfile as necessary and
+remove the appropriate `require` in  the Rack configuration file (`sidekiq_web.ru`), if you'd like
+to just use Pro.
 
 ## Usage
 
