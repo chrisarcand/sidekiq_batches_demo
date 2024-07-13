@@ -6,6 +6,5 @@ gem "sidekiq-ent", "~> 2.5.3", source: "https://enterprise.contribsys.com"
 
 gem 'redis'
 gem 'dotenv'
-gem 'ostruct'
 gem 'puma'
 gem 'rack-session'
