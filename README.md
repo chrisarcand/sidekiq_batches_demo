@@ -30,5 +30,15 @@ $ bundle exec rackup sidekiq_web.ru
 Enqueue the example:
 
 ```
-$ bundle exec ruby enqueue.rb
+$ bundle exec ruby ./enqueue.rb
+```
+
+Open a [pry](https://github.com/pry/pry) developer console with all dependencies required:
+
+```
+$ bundle exec pry -r ./sidekiq.rb
+
+[1] pry(main)> Sidekiq::Queue.all
+2024-07-14T15:03:29.240Z pid=9390 tid=6x2 INFO: Sidekiq 7.3.0 connecting to Redis with options {:size=>10, :pool_name=>"internal", :url=>"redis://localhost:6379/0"}
+=> [#<Sidekiq::Queue:0x00000001051a3e88 @name="default", @rname="queue:default">]
 ```

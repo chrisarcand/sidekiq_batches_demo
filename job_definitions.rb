@@ -29,6 +29,8 @@ class FulfillmentCallbacks
   def step1_success(status, options)
     log_callback!
 
+    sleep 60
+
     oid = options['oid']
     overall = Sidekiq::Batch.new(status.parent_bid)
     overall.jobs do
@@ -58,7 +60,7 @@ class FulfillmentCallbacks
     overall.jobs do
       step3 = Sidekiq::Batch.new
       step3.description = "Nested batch for Step 3 - Job G"
-      step3.on(:complete, 'FulfillmentCallbacks#step2_complete', 'oid' => oid)
+      step3.on(:complete, 'FulfillmentCallbacks#step3_complete', 'oid' => oid)
       step3.on(:success,  'FulfillmentCallbacks#step3_success',  'oid' => oid)
       step3.jobs do
         G.perform_async(oid)
@@ -78,7 +80,7 @@ class FulfillmentCallbacks
     overall.jobs do
       step4 = Sidekiq::Batch.new
       step4.description = "Nested batch for Step 4 - Jobs H & I"
-      step4.on(:complete, 'FulfillmentCallbacks#step2_complete', 'oid' => oid)
+      step4.on(:complete, 'FulfillmentCallbacks#step4_complete', 'oid' => oid)
       step4.on(:success,  'FulfillmentCallbacks#step4_success',  'oid' => oid)
       step4.jobs do
         H.perform_async(oid)
@@ -130,17 +132,29 @@ SLEEP_TIME = 2..10
 
 ('A'..'M').each do |letter|
   next if letter == 'L'
+  next if letter == 'C'
 
   klass = Class.new do
     include Sidekiq::Job
 
     define_method :perform do |oid|
       logger.debug "Performing job #{letter} for order #{oid}"
-      sleep(rand(SLEEP_TIME))
+      interval = rand(SLEEP_TIME)
+      sleep(interval)
+      logger.info "Slept for #{interval} seconds"
     end
   end
 
   Object.const_set(letter, klass)
+end
+
+class C
+  include Sidekiq::Job
+
+  def perform(oid)
+    logger.debug "Performing job C for order #{oid}"
+    sleep(rand(SLEEP_TIME))
+  end
 end
 
 class L
